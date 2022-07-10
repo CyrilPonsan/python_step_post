@@ -123,15 +123,52 @@ def create_fixtures(db: Session):
     x = 0
     db_statut: models.StatutCourrier
     for courrier in liste_courriers:
-        for i in range(4):
-            db_statut = models.StatutCourrier(
-                facteur_id=1,
-                courrier_id=courrier.id,
-                statut_id=i + 1,
-                date=datetime.now() + timedelta(days=x)
+        if not courrier.statutcourriers:
+            for i in range(4):
+                db_statut = models.StatutCourrier(
+                    facteur_id=1,
+                    courrier_id=courrier.id,
+                    statut_id=i + 1,
+                    date=datetime.now() + timedelta(days=x)
+                )
+                x += 1
+                db.add(db_statut)
+    db.commit()
+    db.refresh(db_statut)
+    db_courrier: models.Courrier
+    for dest in destinataires:
+        for i in range(1000):
+            db_courrier = models.Courrier(
+                expediteur_id=1,
+                type=1,
+                bordereau=bordereau,
+                civilite=dest["civilite"],
+                prenom=dest["prenom"],
+                nom=dest["nom"],
+                adresse=dest["adresse"],
+                complement="",
+                code_postal=dest["code_postal"],
+                ville=dest["ville"],
+                telephone=""
             )
-            x += 1
-            db.add(db_statut)
+            db.add(db_courrier)
+            bordereau += 1
+    db.commit()
+    db.refresh(db_courrier)
+    liste_courriers = db.query(models.Courrier).all()
+    x = 0
+    db_statut: models.StatutCourrier
+    for courrier in liste_courriers:
+        if not courrier.statutcourriers:
+            for i in range(5):
+                db_statut = models.StatutCourrier(
+                    facteur_id=1,
+                    courrier_id=courrier.id,
+                    statut_id=i + 1,
+                    date=datetime.now() + timedelta(days=x)
+                )
+                x += 1
+                db.add(db_statut)
     db.commit()
     db.refresh(db_statut)
     return True

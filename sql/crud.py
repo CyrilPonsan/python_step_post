@@ -21,6 +21,6 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.username == email).first()
 
 
-# récupération des courriers non distribués
-def read_all_envois_en_cours(db: Session, user_id: int):
-    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id and models.Courrier.statutcourriers[-1].statut_id < 5).all()
+# récupération tous les courriers
+def read_all_courriers(db: Session, user_id: int):
+    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.id.desc()).all()

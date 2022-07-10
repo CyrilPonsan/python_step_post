@@ -9,14 +9,13 @@ from dependancies.dependancies import JWTBearer, get_db
 from sql import models, schemas
 from sql.database import engine
 from services import service_user, service_jwt, service_courrier
-from toto.toto import toto_route
 
 models.Base.metadata.create_all(bind=engine)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 app = FastAPI()
-app.include_router(toto_route, prefix="/toto", dependencies=[Depends(JWTBearer())])
+# app.include_router(toto_route, prefix="/toto", dependencies=[Depends(JWTBearer())])
 
 # liste des domaines autorisés
 origins = [
@@ -34,13 +33,18 @@ app.add_middleware(
 
 
 @app.get("/courriers", dependencies=[Depends(JWTBearer())], response_model=list[schemas.EnvoiEnCours])
-async def read_all_courriers(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def read_all_envois_en_cours(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return await service_courrier.read_all_courriers(db, token)
 
 
 @app.get("/fixtures")
 async def create_fixtures(db: Session = Depends(get_db)):
     return fixtures.fixtures.create_fixtures(db)
+
+
+@app.get("/historique", dependencies=[Depends(JWTBearer)], response_model=list[schemas.EnvoiEnCours])
+async def read_all_historique(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    return await service_courrier.read_all_historique(db, token)
 
 
 @app.post("/login")
