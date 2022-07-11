@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from services import service_user
@@ -12,22 +13,34 @@ async def create_list_courriers(list_courriers: list[models.Courrier]):
             "statut": courrier.statutcourriers[-1].statut_id,
             "date": courrier.statutcourriers[-1].date
         })
-    # tri de la liste des courriers non distribués par ordre décroissant
-    # list_statuts.sort(key=lambda x: x["date"], reverse=True)
+    # total des courriers transformés et retournés au front-end
+    print(f"{len(list_statuts)} courriers traîtés")
     return list_statuts
+
+
+def filter_courriers(liste: list[models.Courrier], filter: bool):
+    filtered_list = []
+    x = 5 if filter else 7
+    for courrier in liste:
+        if courrier.statutcourriers[-1].statut_id < x:
+            filtered_list.append(courrier)
+    return filtered_list
 
 
 async def read_all_courriers(db: Session, token: str, filter: bool):
     user_id = await read_current_user_id(db, token)
     list_courriers = crud.read_all_courriers(db, user_id)
-    filtered_list = []
-    x = 5 if filter else 7
-    for courrier in list_courriers:
-        if courrier.statutcourriers[-1].statut_id < x:
-            filtered_list.append(courrier)
-    # affichage du total des courriers non distribués
-    print(f"{len(list_courriers)} courriers.")
+    filtered_list = filter_courriers(list_courriers, filter)
+    # affichage du total des courriers enregistrés dans la bdd
+    print(f"{len(list_courriers)} courriers trouvés dans la bdd.")
     return await create_list_courriers(filtered_list)
+
+
+async def read_bordereau(db: Session, courrier_id: int):
+    statuts_courrier = crud.read_bordereau(db, courrier_id)
+    if not statuts_courrier:
+        raise HTTPException(status_code=404, detail="courrier not found")
+    return statuts_courrier.statutcourriers
 
 
 async def read_current_user_id(db: Session, token: str):

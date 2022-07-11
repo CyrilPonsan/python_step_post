@@ -24,3 +24,7 @@ def get_user_by_email(db: Session, email: str):
 # récupération tous les courriers
 def read_all_courriers(db: Session, user_id: int):
     return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.id.desc()).all()
+
+
+def read_bordereau(db: Session, courrier_id: int):
+    return db.query(models.Courrier).filter(models.Courrier.id == courrier_id).first()

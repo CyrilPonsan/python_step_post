@@ -71,7 +71,7 @@ destinataires = {
     "civilite": "mr",
     "prenom": "albert",
     "nom": "dupontel",
-    "adresse": "67 rue du touquet",
+    "adresse": "296 bvd du Olga Ducresne",
     "code_postal": "64470",
     "ville": "serres-castet",
 },
