@@ -34,7 +34,7 @@ app.add_middleware(
 
 @app.get("/courriers", dependencies=[Depends(JWTBearer())], response_model=list[schemas.EnvoiEnCours])
 async def read_all_envois_en_cours(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return await service_courrier.read_all_courriers(db, token)
+    return await service_courrier.read_all_courriers(db, token, True)
 
 
 @app.get("/fixtures")
@@ -44,7 +44,7 @@ async def create_fixtures(db: Session = Depends(get_db)):
 
 @app.get("/historique", dependencies=[Depends(JWTBearer)], response_model=list[schemas.EnvoiEnCours])
 async def read_all_historique(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return await service_courrier.read_all_historique(db, token)
+    return await service_courrier.read_all_courriers(db, token, False)
 
 
 @app.post("/login")

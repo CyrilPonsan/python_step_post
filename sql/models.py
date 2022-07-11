@@ -18,7 +18,7 @@ class Courrier(Base):
     ville = Column(String(255))
     telephone = Column(String(20))
     expediteur = relationship("User", back_populates="courriers")
-    statutcourriers = relationship("StatutCourrier", back_populates="courrier")
+    statutcourriers = relationship("StatutCourrier", back_populates="courrier", lazy="joined", join_depth=2)
 
 
 class Statut(Base):
@@ -43,6 +43,3 @@ class User(Base):
     username = Column(String(255), unique=True, index=True)
     password = Column(String(255))
     courriers = relationship("Courrier", back_populates="expediteur")
-
-
-
