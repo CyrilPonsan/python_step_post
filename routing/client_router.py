@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -8,6 +8,11 @@ from sql import schemas
 
 client_router = APIRouter(prefix="/api", dependencies=[Depends(JWTBearer())])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+
+@client_router.post("/bordereau", response_model=schemas.ResponseBordereau)
+async def read_bordereau(bordereau: str = Form(), db: Session = Depends(get_db)):
+    return await service_courrier.read_bordereau(db, bordereau)
 
 
 # la valeur True signifie qu'on veut en retour les courriers en cours de distribution

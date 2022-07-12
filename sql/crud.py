@@ -26,5 +26,11 @@ def read_all_courriers(db: Session, user_id: int):
     return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.id.desc()).all()
 
 
+# récupération d'un courrier par son numéro de bordereau
 def read_bordereau(db: Session, bordereau: int):
     return db.query(models.Courrier).filter(models.Courrier.bordereau == bordereau).first()
+
+
+# récupération des courriers envoyés à un destinataire précis
+def read_courriers_by_nom(db: Session, nom: str):
+    return db.query(models.Courrier).filter(models.Courrier.nom == nom).all()

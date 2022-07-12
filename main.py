@@ -32,9 +32,10 @@ app.add_middleware(
 app.include_router(client_router)
 
 
-@app.post("/bordereau", response_model=schemas.ResponseBordereau)
-async def read_bordereau(bordereau: str = Form(), db: Session = Depends(get_db)):
-    return await service_courrier.read_bordereau(db, bordereau)
+# filter ? courriers en cours de distribution : courriers distribués
+@app.post("/nom", response_model=list[schemas.ResponseCourrier])
+async def read_courriers_by_nom(db: Session = Depends(get_db), nom: str = Form(), filter: str = Form()):
+    return await service_courrier.read_courriers_by_name(db, nom.lower(), filter)
 
 
 # création d'un token valide
