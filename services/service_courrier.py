@@ -36,13 +36,21 @@ async def read_all_courriers(db: Session, token: str, filter: bool):
     return await create_list_courriers(filtered_list)
 
 
-async def read_bordereau(db: Session, courrier_id: int):
-    statuts_courrier = crud.read_bordereau(db, courrier_id)
-    if not statuts_courrier:
+async def read_bordereau(db: Session, bordereau: str):
+    bordereau = test_bordereau(bordereau)
+    courrier = crud.read_bordereau(db, bordereau)
+    if not courrier:
         raise HTTPException(status_code=404, detail="courrier not found")
-    return statuts_courrier.statutcourriers
+    return {"courrier": courrier, "statuts": courrier.statutcourriers}
 
 
 async def read_current_user_id(db: Session, token: str):
     current_user = await service_user.get_current_user(token)
     return crud.get_user_by_email(db, current_user.username).id
+
+
+def test_bordereau(bordereau):
+    try:
+        return int(bordereau)
+    except:
+        raise HTTPException(status_code=422, detail="dans le cul lulu")

@@ -54,7 +54,7 @@ destinataires = {
     "user_id": 1,
     "civilite": "mme",
     "prenom": "bérangère",
-    "nom": "de ma roche-foucault",
+    "nom": "de la roche-foucault",
     "adresse": "34 rue léo poivrier",
     "code_postal": "64230",
     "ville": "bizanos",

@@ -27,7 +27,10 @@ class Courrier(CourrierBase):
         orm_mode = True
 
 
-class EnvoiEnCours(BaseModel):
+
+
+
+class ResponseCourrier(BaseModel):
     courrier: Courrier
     date: datetime
     statut: int
@@ -64,6 +67,11 @@ class StatutCourrier(StatutCourrierBase):
 
     class Config:
         orm_mode = True
+
+
+class ResponseBordereau(BaseModel):
+    courrier: Courrier
+    statuts: list[StatutCourrier]
 
 
 class Token(BaseModel):

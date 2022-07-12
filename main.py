@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Form, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from starlette.middleware.cors import CORSMiddleware
@@ -32,9 +32,9 @@ app.add_middleware(
 app.include_router(client_router)
 
 
-@app.post("/bordereau", response_model=list[schemas.StatutCourrier])
-async def read_bordereau(courrier_id: int, db: Session = Depends(get_db)):
-    return await service_courrier.read_bordereau(db, courrier_id)
+@app.post("/bordereau", response_model=schemas.ResponseBordereau)
+async def read_bordereau(bordereau: str = Form(), db: Session = Depends(get_db)):
+    return await service_courrier.read_bordereau(db, bordereau)
 
 
 # création d'un token valide

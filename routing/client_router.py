@@ -11,12 +11,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 # la valeur True signifie qu'on veut en retour les courriers en cours de distribution
-@client_router.get("/courriers", response_model=list[schemas.EnvoiEnCours])
+@client_router.get("/courriers", response_model=list[schemas.ResponseCourrier])
 async def read_all_envois_en_cours(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return await service_courrier.read_all_courriers(db, token, True)
 
 
 # la valeur False signifie qu'on veut en retour les courriers distribués ou retournés à l'expéditeur
-@client_router.get("/historique", response_model=list[schemas.EnvoiEnCours])
+@client_router.get("/historique", response_model=list[schemas.ResponseCourrier])
 async def read_all_historique(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return await service_courrier.read_all_courriers(db, token, False)

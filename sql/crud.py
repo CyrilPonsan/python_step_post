@@ -26,5 +26,5 @@ def read_all_courriers(db: Session, user_id: int):
     return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.id.desc()).all()
 
 
-def read_bordereau(db: Session, courrier_id: int):
-    return db.query(models.Courrier).filter(models.Courrier.id == courrier_id).first()
+def read_bordereau(db: Session, bordereau: int):
+    return db.query(models.Courrier).filter(models.Courrier.bordereau == bordereau).first()
