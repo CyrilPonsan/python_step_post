@@ -50,6 +50,7 @@ async def create_fixtures(db: Session = Depends(get_db)):
     return fixtures.fixtures.create_fixtures(db)
 
 
+# création d'un nouvel utilisateur
 @app.post("/user/new/", response_model=schemas.User)
 async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return service_user.create_user(user, db)
