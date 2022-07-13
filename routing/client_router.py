@@ -25,3 +25,9 @@ async def read_all_envois_en_cours(db: Session = Depends(get_db), token: str = D
 @client_router.get("/historique", response_model=list[schemas.ResponseCourrier])
 async def read_all_historique(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     return await service_courrier.read_all_courriers(db, token, False)
+
+
+# filter ? courriers en cours de distribution : courriers distribués
+@client_router.post("/nom", response_model=list[schemas.ResponseCourrier])
+async def read_courriers_by_nom(db: Session = Depends(get_db), nom: str = Form(), filter: str = Form()):
+    return await service_courrier.read_courriers_by_name(db, nom.lower(), filter)

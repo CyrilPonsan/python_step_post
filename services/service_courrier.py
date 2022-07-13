@@ -20,20 +20,22 @@ async def create_list_courriers(list_courriers: list[models.Courrier]):
 
 def filter_courriers(liste: list[models.Courrier], filter: bool):
     filtered_list = []
-    x = 5 if filter else 7
     for courrier in liste:
-        if courrier.statutcourriers[-1].statut_id < x:
-            filtered_list.append(courrier)
+        if filter:
+            if courrier.statutcourriers[-1].statut_id < 5:
+                filtered_list.append(courrier)
+        else:
+            if courrier.statutcourriers[-1].statut_id > 4:
+                filtered_list.append(courrier)
     return filtered_list
 
 
 async def read_all_courriers(db: Session, token: str, filter: bool):
     user_id = await read_current_user_id(db, token)
     list_courriers = crud.read_all_courriers(db, user_id)
-    filtered_list = filter_courriers(list_courriers, filter)
     # affichage du total des courriers enregistrés dans la bdd
     print(f"{len(list_courriers)} courriers trouvés dans la bdd.")
-    return await create_list_courriers(filtered_list)
+    return await create_list_courriers(filter_courriers(list_courriers, filter))
 
 
 async def read_bordereau(db: Session, bordereau: str):

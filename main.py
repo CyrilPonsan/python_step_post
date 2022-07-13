@@ -32,12 +32,6 @@ app.add_middleware(
 app.include_router(client_router)
 
 
-# filter ? courriers en cours de distribution : courriers distribués
-@app.post("/nom", response_model=list[schemas.ResponseCourrier])
-async def read_courriers_by_nom(db: Session = Depends(get_db), nom: str = Form(), filter: str = Form()):
-    return await service_courrier.read_courriers_by_name(db, nom.lower(), filter)
-
-
 # création d'un token valide
 @app.post("/login")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
