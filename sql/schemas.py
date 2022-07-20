@@ -27,9 +27,6 @@ class Courrier(CourrierBase):
         orm_mode = True
 
 
-
-
-
 class ResponseCourrier(BaseModel):
     courrier: Courrier
     date: datetime
