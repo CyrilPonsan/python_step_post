@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, Depends, Form, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 import fixtures.fixtures
 from dependancies.dependancies import get_db

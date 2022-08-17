@@ -1,14 +1,15 @@
 from datetime import datetime, timedelta
 import mysql.connector
+import mariadb
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from sql import models
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="toto",
-    password="toto",
-    database="python-step-post"
+mydb = mariadb.connect(
+    host="j5zntocs2dn6c3fj.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
+    user="htpkkl1ks2cterll",
+    password="d60ca1mc7jx8aepu",
+    database="bfph5v8vakot3nhn"
 )
 destinataires = {
     "user_id": 1,
@@ -87,7 +88,7 @@ etats = [
 
 def create_fixtures(db: Session):
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    hashed_password = pwd_context.hash("toto")
+    hashed_password = pwd_context.hash("Abcd@1234")
     db_user = models.User(username="toto@toto.fr", password=hashed_password)
     db.add(db_user)
     db.commit()
@@ -137,7 +138,7 @@ def create_fixtures(db: Session):
     db.refresh(db_statut)
     db_courrier: models.Courrier
     for dest in destinataires:
-        for i in range(1000):
+        for i in range(500):
             db_courrier = models.Courrier(
                 expediteur_id=1,
                 type=1,

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -12,7 +14,6 @@ class CourrierBase(BaseModel):
     complement: str
     code_postal: str
     ville: str
-    telephone: str
 
 
 class CourrierCreate(CourrierBase):
@@ -26,9 +27,23 @@ class Courrier(CourrierBase):
     class Config:
         orm_mode = True
 
+class TempCourrier(BaseModel):
+    id: int
+    type: int
+    bordereau: int
+    civilite: str
+    prenom: str
+    nom: str
+    adresse: str
+    code_postal: str
+    ville: str
+
+    class Config:
+        orm_mode = True
+
 
 class ResponseCourrier(BaseModel):
-    courrier: Courrier
+    courrier: TempCourrier
     date: datetime
     statut: int
 
@@ -77,7 +92,7 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: Optional[str] = None
 
 
 class UserBase(BaseModel):

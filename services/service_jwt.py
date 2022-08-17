@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Optional
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
@@ -22,7 +24,7 @@ def authenticate_user(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta

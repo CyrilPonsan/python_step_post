@@ -17,8 +17,8 @@ class Courrier(Base):
     code_postal = Column(String(10))
     ville = Column(String(255))
     telephone = Column(String(20))
-    expediteur = relationship("User", back_populates="courriers")
-    statutcourriers = relationship("StatutCourrier", back_populates="courrier", lazy="joined", join_depth=2)
+    expediteur = relationship("User",  lazy="joined")
+    statutcourriers = relationship("StatutCourrier",  lazy="joined")
 
 
 class Statut(Base):
@@ -34,7 +34,6 @@ class StatutCourrier(Base):
     facteur_id = Column(Integer)
     courrier_id = Column(Integer, ForeignKey("courrier.id"))
     statut_id = Column(Integer, ForeignKey("statut.id"))
-    courrier = relationship("Courrier", back_populates="statutcourriers")
 
 
 class User(Base):

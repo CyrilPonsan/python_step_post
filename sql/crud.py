@@ -21,10 +21,14 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.username == email).first()
 
 
-# récupération tous les courriers
+# récupération de tous les courriers
 def read_all_courriers(db: Session, user_id: int):
-    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.id.desc()).all()
-
+#    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.bordereau.desc()).all()
+    return db.query(models.Courrier).\
+        join(models.Courrier.statutcourriers).\
+        filter(models.Courrier.expediteur_id == user_id).\
+        order_by(models.StatutCourrier.date).\
+        all()
 
 # récupération d'un courrier par son numéro de bordereau
 def read_bordereau(db: Session, bordereau: int):

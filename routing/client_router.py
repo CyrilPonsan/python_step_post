@@ -18,7 +18,7 @@ async def read_bordereau(bordereau: str = Form(), db: Session = Depends(get_db))
 # la valeur True signifie qu'on veut en retour les courriers en cours de distribution
 @client_router.get("/courriers", response_model=list[schemas.ResponseCourrier])
 async def read_all_envois_en_cours(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    return await service_courrier.read_all_courriers(db, token, True)
+    return await service_courrier.read_all_courriers(db, token, False)
 
 
 # la valeur False signifie qu'on veut en retour les courriers distribués ou retournés à l'expéditeur
