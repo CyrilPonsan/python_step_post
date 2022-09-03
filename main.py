@@ -12,7 +12,6 @@ from fastapi_jwt_auth import AuthJWT
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
-app.include_router(client_router)
 
 class User(BaseModel):
     username: str
@@ -45,6 +44,13 @@ def login(user: User, Authorize: AuthJWT = Depends()):
 
     access_token = Authorize.create_access_token(subject=user.username)
     return {"access_token": access_token}
+
+
+@app.get("/user")
+def user(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    return {"user": current_user}
 
 
 if __name__ == "__main__":
