@@ -1,5 +1,6 @@
 from fastapi import Depends
 from fastapi_jwt_auth import AuthJWT
+from pydantic import BaseModel
 
 from sql.database import SessionLocal
 
@@ -11,7 +12,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-def get_Authorize(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()

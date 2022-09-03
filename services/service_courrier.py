@@ -1,10 +1,11 @@
 from fastapi import HTTPException
+from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 
-from services import service_user
 from sql import crud, models
 
 
+# noinspection PyCompatibility
 async def create_list_courriers(list_courriers: list[models.Courrier]):
     list_statuts = []
     for courrier in list_courriers:
@@ -31,18 +32,18 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
     return filtered_list
 
 
-async def read_all_courriers(db: Session, token: str, filter: str):
-    print(filter)
+async def read_all_courriers(db: Session, email: str, filter: str):
     if filter == "true":
-        bFilter = True;
+        b_filter = True
     else:
         if filter == "false":
-            bFilter = False
-    user = await read_current_user(db, token)
+            b_filter = False
+    user = crud.get_user_by_email(db, email)
     list_courriers = user.courriers
+
     # affichage du total des courriers enregistrés dans la bdd
     print(f"{len(list_courriers)} courriers trouvés dans la bdd.")
-    return await create_list_courriers(filter_courriers(list_courriers, bFilter))
+    return await create_list_courriers(filter_courriers(list_courriers, b_filter))
 
 
 async def read_bordereau(db: Session, bordereau: str):
@@ -59,11 +60,6 @@ async def read_courriers_by_name(db: Session, nom: str, str_filter: str):
         raise HTTPException(status_code=404, detail="destinataire not found")
     filtered_list = filter_courriers(list_courriers, test_filter(str_filter))
     return await create_list_courriers(filtered_list)
-
-
-async def read_current_user(db: Session, token: str):
-    current_user = await service_user.get_current_user(token)
-    return crud.get_user_by_email(db, current_user.username)
 
 
 def test_bordereau(bordereau):
