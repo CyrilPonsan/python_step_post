@@ -18,8 +18,8 @@ class Courrier(Base):
     ville = Column(String(255))
     telephone = Column(String(20))
     expediteur = relationship("User")
-    statutcourriers = relationship("StatutCourrier", lazy="joined")
-    user = relationship("User")
+    #statutcourriers = relationship("StatutCourrier", lazy="joined")
+    #user = relationship("User")
 
 
 class Statut(Base):

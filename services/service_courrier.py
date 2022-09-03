@@ -43,6 +43,8 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
 def read_all_courriers(db: Session, user_id: int):
     user = crud.get_user_by_id(db, user_id)
     list_courriers = crud.read_all_courriers(db, user.id)
+    for x in list_courriers:
+        print(x.statut_id)
     print(f"{len(list_courriers)} courriers traités")
     return toto(list_courriers)
 

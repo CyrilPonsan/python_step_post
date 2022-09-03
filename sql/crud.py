@@ -27,15 +27,15 @@ def get_user_by_email(db: Session, email: str):
 
 # récupération de tous les courriers
 def read_all_courriers(db: Session, user_id: int):
-    return db.query(models.StatutCourrier) \
-                    .group_by(models.StatutCourrier.courrier_id) \
-                    .order_by(models.StatutCourrier.id.desc()) \
-                    .having(func.max(models.StatutCourrier.statut_id) < 5) \
-                    .subquery(func.max(models.StatutCourrier.statut_id)) \
-                    .join(models.Courrier) \
-                    .order_by(models.Courrier.bordereau) \
-                    .filter(models.Courrier.expediteur_id == user_id) \
-                    .all()
+    stmt = db.query(models.StatutCourrier).order_by(models.StatutCourrier.statut_id.desc())
+    return stmt \
+        .group_by(models.StatutCourrier.courrier_id) \
+        .filter(models.StatutCourrier.statut_id > 4) \
+        .order_by(models.StatutCourrier.id.desc()) \
+        .join(models.Courrier) \
+        .order_by(models.Courrier.bordereau) \
+        .filter(models.Courrier.expediteur_id == user_id) \
+        .all()
 
 
 # récupération d'un courrier par son numéro de bordereau
