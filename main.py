@@ -4,6 +4,8 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
+
+from dependancies.dependancies import get_db
 from sql import models, schemas, crud
 from sql.database import engine
 from pydantic import BaseModel
@@ -38,7 +40,7 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 
 
 @app.post("/login")
-def login(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session = Depends()):
+def login(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db())):
     db_user = crud.get_user_by_email(db, user.username)
     if user:
         if not authenticate_user(user.password, db_user.password):
