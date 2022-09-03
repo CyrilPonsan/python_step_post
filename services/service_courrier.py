@@ -37,6 +37,8 @@ def read_all_courriers(db: Session, user_id: int, filter: str):
             b_filter = False
     user = crud.get_user_by_id(db, user_id)
     list_courriers = crud.read_all_courriers(db, user.id)
+    for x in list_courriers:
+        print(f"nbre statuts" {len(x.statutcourriers)})
     return create_list_courriers(list_courriers)
 
 
