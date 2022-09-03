@@ -8,7 +8,7 @@ class Courrier(Base):
     id = Column(Integer, primary_key=True, index=True)
     expediteur_id = Column(Integer, ForeignKey("user.id"))
     type = Column(Integer)
-    bordereau = Column(Integer)
+    bordereau = Column(Integer, index=True)
     civilite = Column(String(10))
     nom = Column(String(255))
     prenom = Column(String(255))
@@ -30,7 +30,7 @@ class Statut(Base):
 class StatutCourrier(Base):
     __tablename__ = "statutcourrier"
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime)
+    date = Column(DateTime, index=True)
     facteur_id = Column(Integer)
     courrier_id = Column(Integer, ForeignKey("courrier.id"))
     statut_id = Column(Integer, ForeignKey("statut.id"))

@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -23,16 +22,19 @@ def get_user_by_email(db: Session, email: str):
 
 # récupération de tous les courriers
 def read_all_courriers(db: Session, user_id: int):
-#    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id).order_by(models.Courrier.bordereau.desc()).all()
-    return db.query(models.Courrier).\
-        join(models.Courrier.statutcourriers).\
-        filter(models.Courrier.expediteur_id == user_id).\
-        order_by(models.StatutCourrier.date).\
-        all()
+    return db.query(models.Courrier) \
+        .filter(models.Courrier.expediteur_id == user_id) \
+        .order_by(models.Courrier.bordereau.desc()) \
+        .all()
+
 
 # récupération d'un courrier par son numéro de bordereau
 def read_bordereau(db: Session, bordereau: int):
-    return db.query(models.Courrier).filter(models.Courrier.bordereau == bordereau).first()
+    return db.query(models.Courrier) \
+        .join(models.Courrier.statutcourriers) \
+        .order_by(models.StatutCourrier.date.desc()) \
+        .filter(models.Courrier.bordereau == bordereau) \
+        .first()
 
 
 # récupération des courriers envoyés à un destinataire précis

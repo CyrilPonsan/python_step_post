@@ -18,6 +18,7 @@ app = FastAPI()
 # liste des domaines autorisés
 origins = [
     "http://localhost:4200",
+    "http://localhost:40445"
 ]
 
 # politique CORS
