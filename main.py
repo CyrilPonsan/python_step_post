@@ -1,10 +1,10 @@
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi_jwt_auth.exceptions import AuthJWTException
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
-
-from routing.client_router import client_router
-from sql import models
+from sql import models, schemas, crud
 from sql.database import engine
 from pydantic import BaseModel
 from fastapi_jwt_auth import AuthJWT
@@ -13,9 +13,9 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-class User(BaseModel):
-    username: str
-    password: str
+def authenticate_user(plain_password, hashed_password):
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 class Settings(BaseModel):
@@ -38,10 +38,11 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 
 
 @app.post("/login")
-def login(user: User, Authorize: AuthJWT = Depends()):
-    if user.username != "toto@toto.fr":
-        raise HTTPException(status_code=401, detail="Identifiants incorrects")
-
+def login(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session = Depends()):
+    db_user = crud.get_user_by_email(db, user.username)
+    if user:
+        if not authenticate_user(user.password, db_user.password):
+            raise HTTPException(status_code=401, detail="Identifiants incorrects")
     access_token = Authorize.create_access_token(subject=user.username)
     return {"access_token": access_token}
 
