@@ -12,8 +12,7 @@ from fastapi_jwt_auth import AuthJWT
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
-
-app.include_router(client_router, "/api")
+app.include_router(client_router)
 
 
 def authenticate_user(plain_password, hashed_password):
