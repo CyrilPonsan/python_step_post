@@ -3,8 +3,8 @@ from fastapi import FastAPI, Request
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from passlib.context import CryptContext
 from starlette.responses import JSONResponse
-
 from routing.client_router import client_router
+
 from sql import models, schemas, crud
 from sql.database import engine
 from pydantic import BaseModel
