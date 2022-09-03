@@ -18,8 +18,7 @@ class Courrier(Base):
     ville = Column(String(255))
     telephone = Column(String(20))
     expediteur = relationship("User")
-    statutcourriers = relationship("StatutCourrier", lazy="joined")
-    user = relationship("User")
+    statutcourriers = relationship("StatutCourrier", lazy="select")
 
 
 class Statut(Base):
@@ -35,7 +34,6 @@ class StatutCourrier(Base):
     facteur_id = Column(Integer)
     courrier_id = Column(Integer, ForeignKey("courrier.id"))
     statut_id = Column(Integer, ForeignKey("statut.id"))
-    courrier = relationship("Courrier", lazy="joined")
 
 
 class User(Base):
@@ -43,4 +41,4 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(255), unique=True, index=True)
     password = Column(String(255))
-    # courriers = relationship("Courrier", back_populates="expediteur")
+    courriers = relationship("Courrier", back_populates="expediteur")

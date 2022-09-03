@@ -1,4 +1,5 @@
 from passlib.context import CryptContext
+from sqlalchemy import func, or_, not_
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -26,19 +27,29 @@ def get_user_by_email(db: Session, email: str):
 
 # récupération de tous les courriers
 def read_all_courriers(db: Session, user_id: int):
-    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id)\
-        .join(models.StatutCourrier) \
-        .filter(models.StatutCourrier.statut_id > 4) \
-        .all()
+    return db.query(models.StatutCourrier) \
+                    .group_by(models.StatutCourrier.courrier_id) \
+                    .order_by(models.StatutCourrier.id.desc()) \
+                    .having(func.max(models.StatutCourrier.statut_id) < 5) \
+                    .subquery(func.max(models.StatutCourrier.statut_id)) \
+                    .join(models.Courrier) \
+                    .order_by(models.Courrier.bordereau) \
+                    .filter(models.Courrier.expediteur_id == user_id) \
+                    .all()
 
 
 # récupération d'un courrier par son numéro de bordereau
 def read_bordereau(db: Session, bordereau: int, user_id: int):
     return db.query(models.Courrier) \
-        .filter(models.Courrier.expediteur_id == user_id and models.Courrier.bordereau == bordereau) \
+        .filter(models.Courrier.expediteur_id == user_id, models.Courrier.bordereau == bordereau) \
         .first()
 
 
 # récupération des courriers envoyés à un destinataire précis
 def read_courriers_by_nom(db: Session, nom: str):
     return db.query(models.Courrier).filter(models.Courrier.nom == nom).all()
+
+
+def testStatut(value: int):
+    if 4 < value < 6:
+        return True

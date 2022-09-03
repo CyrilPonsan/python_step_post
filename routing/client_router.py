@@ -10,10 +10,10 @@ client_router = APIRouter(prefix="/api")
 
 
 @client_router.get("/courriers", response_model=list[schemas.ResponseCourrier])
-def courriers(filter: str, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+def courriers(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     user_id = Authorize.get_jwt_subject()
-    return service_courrier.read_all_courriers(db, user_id, filter)
+    return service_courrier.read_all_courriers(db, user_id)
 
 
 @client_router.get("/timeline", response_model=schemas.ResponseBordereau)

@@ -16,6 +16,17 @@ def create_list_courriers(list_courriers: list[models.Courrier]):
     return list_statuts
 
 
+def toto(liste: list[models.StatutCourrier]):
+    list_toto = []
+    for statut in liste:
+        list_toto.append({
+            "courrier": statut.courrier,
+            "statut": statut.statut_id,
+            "date": statut.date
+        })
+    return list_toto
+
+
 def filter_courriers(liste: list[models.Courrier], filter: bool):
     filtered_list = []
     if filter:
@@ -29,21 +40,14 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
     return filtered_list
 
 
-def read_all_courriers(db: Session, user_id: int, filter: str):
-    if filter == "true":
-        b_filter = True
-    else:
-        if filter == "false":
-            b_filter = False
+def read_all_courriers(db: Session, user_id: int):
     user = crud.get_user_by_id(db, user_id)
     list_courriers = crud.read_all_courriers(db, user.id)
-    for x in list_courriers:
-        print(f"nbre statuts" {len(x.statutcourriers)})
-    return create_list_courriers(list_courriers)
+    print(f"{len(list_courriers)} courriers traités")
+    return toto(list_courriers)
 
 
 async def read_bordereau(db: Session, bordereau: str, user_id: int):
-    print(f"userid ${user_id}")
     bordereau = test_bordereau(bordereau)
     courrier = crud.read_bordereau(db, bordereau, user_id)
     if not courrier:
