@@ -15,6 +15,10 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+
 # username est le nom donné au champ email dans la bdd
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.username == email).first()
@@ -22,18 +26,16 @@ def get_user_by_email(db: Session, email: str):
 
 # récupération de tous les courriers
 def read_all_courriers(db: Session, user_id: int):
-    return db.query(models.Courrier) \
-        .filter(models.Courrier.expediteur_id == user_id) \
-        .order_by(models.Courrier.bordereau.desc()) \
+    return db.query(models.Courrier).filter(models.Courrier.expediteur_id == user_id)\
+        .join(models.StatutCourrier) \
+        .filter(models.StatutCourrier.statut_id > 4) \
         .all()
 
 
 # récupération d'un courrier par son numéro de bordereau
-def read_bordereau(db: Session, bordereau: int):
+def read_bordereau(db: Session, bordereau: int, user_id: int):
     return db.query(models.Courrier) \
-        .join(models.Courrier.statutcourriers) \
-        .order_by(models.StatutCourrier.date.desc()) \
-        .filter(models.Courrier.bordereau == bordereau) \
+        .filter(models.Courrier.expediteur_id == user_id and models.Courrier.bordereau == bordereau) \
         .first()
 
 

@@ -20,7 +20,7 @@ def login(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session 
     if user:
         if not authenticate_user(user.password, db_user.password):
             raise HTTPException(status_code=401, detail="Identifiants incorrects")
-    access_token = Authorize.create_access_token(subject=user.username)
+    access_token = Authorize.create_access_token(subject=db_user.id)
     return {"access_token": access_token}
 
 

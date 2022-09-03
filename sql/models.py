@@ -17,8 +17,8 @@ class Courrier(Base):
     code_postal = Column(String(10))
     ville = Column(String(255))
     telephone = Column(String(20))
-    expediteur = relationship("User",  lazy="joined")
-    statutcourriers = relationship("StatutCourrier",  lazy="joined")
+    expediteur = relationship("User")
+    statutcourriers = relationship("StatutCourrier", lazy="select")
 
 
 class Statut(Base):

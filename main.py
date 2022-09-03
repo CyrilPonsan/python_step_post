@@ -1,11 +1,14 @@
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
+from dependancies.dependancies import get_db
+from fixtures.fixtures import create_fixtures
 from routing.auth_router import auth_router
 from routing.client_router import client_router
 from sql import models
@@ -51,6 +54,11 @@ def authjwt_exception_handler(exc: AuthJWTException):
         status_code=exc.status_code,
         content={"detail": exc.message}
     )
+
+
+@app.get("/fixtures")
+def fixtures(db: Session = Depends(get_db)):
+    return create_fixtures(db)
 
 
 if __name__ == "__main__":

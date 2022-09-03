@@ -1,12 +1,11 @@
 from fastapi import HTTPException
-from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 
 from sql import crud, models
 
 
 # noinspection PyCompatibility
-async def create_list_courriers(list_courriers: list[models.Courrier]):
+def create_list_courriers(list_courriers: list[models.Courrier]):
     list_statuts = []
     for courrier in list_courriers:
         list_statuts.append({
@@ -14,8 +13,6 @@ async def create_list_courriers(list_courriers: list[models.Courrier]):
             "statut": courrier.statutcourriers[-1].statut_id,
             "date": courrier.statutcourriers[-1].date
         })
-    # total des courriers transformés et retournés au front-end
-    print(f"{len(list_statuts)} courriers traîtés")
     return list_statuts
 
 
@@ -32,23 +29,21 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
     return filtered_list
 
 
-async def read_all_courriers(db: Session, email: str, filter: str):
+def read_all_courriers(db: Session, user_id: int, filter: str):
     if filter == "true":
         b_filter = True
     else:
         if filter == "false":
             b_filter = False
-    user = crud.get_user_by_email(db, email)
-    list_courriers = user.courriers
-
-    # affichage du total des courriers enregistrés dans la bdd
-    print(f"{len(list_courriers)} courriers trouvés dans la bdd.")
-    return await create_list_courriers(filter_courriers(list_courriers, b_filter))
+    user = crud.get_user_by_id(db, user_id)
+    list_courriers = crud.read_all_courriers(db, user.id)
+    return create_list_courriers(list_courriers)
 
 
-async def read_bordereau(db: Session, bordereau: str):
+async def read_bordereau(db: Session, bordereau: str, user_id: int):
+    print(f"userid ${user_id}")
     bordereau = test_bordereau(bordereau)
-    courrier = crud.read_bordereau(db, bordereau)
+    courrier = crud.read_bordereau(db, bordereau, user_id)
     if not courrier:
         raise HTTPException(status_code=404, detail="courrier not found")
     return {"courrier": courrier, "statuts": courrier.statutcourriers}

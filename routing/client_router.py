@@ -1,21 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi_jwt_auth import AuthJWT
-from passlib.context import CryptContext
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from dependancies.dependancies import get_db
 from services import service_courrier
-from sql import schemas, crud
-
-
+from sql import schemas
 
 client_router = APIRouter(prefix="/api")
 
 
 @client_router.get("/courriers", response_model=list[schemas.ResponseCourrier])
-async def courriers(filter: str, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+def courriers(filter: str, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
-    username = Authorize.get_jwt_subject()
-    return await service_courrier.read_all_courriers(db, username, filter)
+    user_id = Authorize.get_jwt_subject()
+    return service_courrier.read_all_courriers(db, user_id, filter)
 
+
+@client_router.get("/timeline", response_model=schemas.ResponseBordereau)
+async def timeline(bordereau: str, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    user_id = Authorize.get_jwt_subject()
+    return await service_courrier.read_bordereau(db, bordereau, user_id)

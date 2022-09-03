@@ -1,7 +1,3 @@
-from fastapi import Depends
-from fastapi_jwt_auth import AuthJWT
-from pydantic import BaseModel
-
 from sql.database import SessionLocal
 
 
