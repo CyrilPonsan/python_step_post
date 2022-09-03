@@ -1,11 +1,11 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from services import service_user
 from sql import crud, models
 
 
-async def create_list_courriers(list_courriers: list[models.Courrier]):
+# noinspection PyCompatibility
+def create_list_courriers(list_courriers: list[models.Courrier]):
     list_statuts = []
     for courrier in list_courriers:
         list_statuts.append({
@@ -13,9 +13,18 @@ async def create_list_courriers(list_courriers: list[models.Courrier]):
             "statut": courrier.statutcourriers[-1].statut_id,
             "date": courrier.statutcourriers[-1].date
         })
-    # total des courriers transformés et retournés au front-end
-    print(f"{len(list_statuts)} courriers traîtés")
     return list_statuts
+
+
+def toto(liste: list[models.StatutCourrier]):
+    list_toto = []
+    for statut in liste:
+        list_toto.append({
+            "courrier": statut.courrier,
+            "statut": statut.statut_id,
+            "date": statut.date
+        })
+    return list_toto
 
 
 def filter_courriers(liste: list[models.Courrier], filter: bool):
@@ -31,23 +40,16 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
     return filtered_list
 
 
-async def read_all_courriers(db: Session, token: str, filter: str):
-    print(filter)
-    if filter == "true":
-        bFilter = True;
-    else:
-        if filter == "false":
-            bFilter = False
-    user = await read_current_user(db, token)
-    list_courriers = user.courriers
-    # affichage du total des courriers enregistrés dans la bdd
-    print(f"{len(list_courriers)} courriers trouvés dans la bdd.")
-    return await create_list_courriers(filter_courriers(list_courriers, bFilter))
+def read_all_courriers(db: Session, user_id: int):
+    user = crud.get_user_by_id(db, user_id)
+    list_courriers = crud.read_all_courriers(db, user.id)
+    print(f"{len(list_courriers)} courriers traités")
+    return toto(list_courriers)
 
 
-async def read_bordereau(db: Session, bordereau: str):
+async def read_bordereau(db: Session, bordereau: str, user_id: int):
     bordereau = test_bordereau(bordereau)
-    courrier = crud.read_bordereau(db, bordereau)
+    courrier = crud.read_bordereau(db, bordereau, user_id)
     if not courrier:
         raise HTTPException(status_code=404, detail="courrier not found")
     return {"courrier": courrier, "statuts": courrier.statutcourriers}
@@ -59,11 +61,6 @@ async def read_courriers_by_name(db: Session, nom: str, str_filter: str):
         raise HTTPException(status_code=404, detail="destinataire not found")
     filtered_list = filter_courriers(list_courriers, test_filter(str_filter))
     return await create_list_courriers(filtered_list)
-
-
-async def read_current_user(db: Session, token: str):
-    current_user = await service_user.get_current_user(token)
-    return crud.get_user_by_email(db, current_user.username)
 
 
 def test_bordereau(bordereau):

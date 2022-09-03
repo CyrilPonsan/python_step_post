@@ -72,7 +72,7 @@ destinataires = {
     "civilite": "mr",
     "prenom": "albert",
     "nom": "dupontel",
-    "adresse": "296 bvd du Olga Ducresne",
+    "adresse": "296 bvd Olga Ducresne",
     "code_postal": "64470",
     "ville": "serres-castet",
 },
@@ -89,7 +89,7 @@ etats = [
 def create_fixtures(db: Session):
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     hashed_password = pwd_context.hash("Abcd@1234")
-    db_user = models.User(username="toto@toto.fr", password=hashed_password)
+    db_user = models.User(username="titi@toto.fr", password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -99,12 +99,12 @@ def create_fixtures(db: Session):
         db.add(db_etat)
         db.commit()
         db.refresh(db_etat)
-    bordereau = 10000
+    bordereau = 18320
     db_courrier: models.Courrier
     for dest in destinataires:
         for i in range(20):
             db_courrier = models.Courrier(
-                expediteur_id=1,
+                expediteur_id=2,
                 type=1,
                 bordereau=bordereau,
                 civilite=dest["civilite"],
@@ -140,7 +140,7 @@ def create_fixtures(db: Session):
     for dest in destinataires:
         for i in range(500):
             db_courrier = models.Courrier(
-                expediteur_id=1,
+                expediteur_id=2,
                 type=1,
                 bordereau=bordereau,
                 civilite=dest["civilite"],
@@ -161,11 +161,14 @@ def create_fixtures(db: Session):
     db_statut: models.StatutCourrier
     for courrier in liste_courriers:
         if not courrier.statutcourriers:
-            for i in range(5):
+            for i in range(6):
+                j = i + 1
+                if i == 4:
+                    j = i + 2
                 db_statut = models.StatutCourrier(
                     facteur_id=1,
                     courrier_id=courrier.id,
-                    statut_id=i + 1,
+                    statut_id=j,
                     date=datetime.now() + timedelta(days=x)
                 )
                 x += 1
