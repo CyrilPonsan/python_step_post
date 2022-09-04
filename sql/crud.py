@@ -42,7 +42,7 @@ def read_historique(db: Session, user_id: int):
         .group_by(models.StatutCourrier.courrier_id) \
         .filter(models.StatutCourrier.statut_id > 4) \
         .join(models.Courrier) \
-        .order_by(models.Courrier.bordereau) \
+        .order_by(models.Courrier.bordereau.desc()) \
         .filter(models.Courrier.expediteur_id == user_id) \
         .all()
 
