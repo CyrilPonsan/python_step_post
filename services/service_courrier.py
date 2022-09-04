@@ -5,6 +5,9 @@ from sql import crud, models
 
 
 # noinspection PyCompatibility
+from sql.crud import read_historique
+
+
 def create_list_courriers(list_courriers: list[models.Courrier]):
     list_statuts = []
     for courrier in list_courriers:
@@ -40,9 +43,12 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
     return filtered_list
 
 
-def read_all_courriers(db: Session, user_id: int):
+def read_all_courriers(db: Session, user_id: int, filter: str, list_courriers=None):
     user = crud.get_user_by_id(db, user_id)
-    list_courriers = crud.read_all_courriers(db, user.id)
+    if filter == "true":
+        list_courriers = crud.read_courriers(db, user.id)
+    elif filter == "false":
+        list_courriers = crud.read_historique(db, user_id)
     for x in list_courriers:
         print(x.statut_id)
     print(f"{len(list_courriers)} courriers traités")
