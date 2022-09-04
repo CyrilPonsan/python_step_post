@@ -30,7 +30,7 @@ def read_courriers(db: Session, user_id: int):
     stmt = db.query(models.StatutCourrier).order_by(models.StatutCourrier.statut_id.desc())
     return stmt \
         .group_by(models.StatutCourrier.courrier_id) \
-        .filter(models.StatutCourrier.statut_id > 4) \
+        .having(func.max(models.StatutCourrier.statut_id < 5)) \
         .order_by(models.StatutCourrier.id.desc()) \
         .join(models.Courrier) \
         .order_by(models.Courrier.bordereau) \
@@ -42,7 +42,7 @@ def read_historique(db: Session, user_id: int):
     stmt = db.query(models.StatutCourrier).order_by(models.StatutCourrier.statut_id.desc())
     return stmt \
         .group_by(models.StatutCourrier.courrier_id) \
-        .having(func.max(models.StatutCourrier.statut_id < 5)) \
+        .filter(models.StatutCourrier.statut_id > 4) \
         .order_by(models.StatutCourrier.id.desc()) \
         .join(models.Courrier) \
         .order_by(models.Courrier.bordereau) \
