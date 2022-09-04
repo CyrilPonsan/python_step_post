@@ -13,7 +13,6 @@ client_router = APIRouter(prefix="/api")
 def courriers(filter: str, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     user_id = Authorize.get_jwt_subject()
-    print(f"user id : {user_id}")
     return service_courrier.read_all_courriers(db, user_id, filter)
 
 

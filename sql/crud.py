@@ -34,7 +34,6 @@ def read_courriers(db: Session, user_id: int):
         .join(models.Courrier) \
         .order_by(models.Courrier.bordereau.desc()) \
         .filter(models.Courrier.expediteur_id == user_id) \
-        .order_by(sc.statut_id.desc()) \
         .all()
 
 
