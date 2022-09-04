@@ -27,27 +27,32 @@ def get_user_by_email(db: Session, email: str):
 
 # récupération de tous les courriers
 def read_courriers(db: Session, user_id: int):
-    stmt = db.query(models.StatutCourrier).order_by(models.StatutCourrier.statut_id.desc())
-    return stmt \
-        .group_by(models.StatutCourrier.courrier_id) \
-        .having(func.max(models.StatutCourrier.statut_id < 5)) \
-        .order_by(models.StatutCourrier.id.desc()) \
+    sc = models.StatutCourrier
+    return db.query(sc) \
+        .group_by(sc.courrier_id.desc()) \
+        .having(func.max(sc.statut_id) < 5) \
         .join(models.Courrier) \
-        .order_by(models.Courrier.bordereau) \
+        .order_by(models.Courrier.bordereau.desc()) \
         .filter(models.Courrier.expediteur_id == user_id) \
+        .order_by(sc.statut_id.desc()) \
         .all()
 
 
 def read_historique(db: Session, user_id: int):
-    stmt = db.query(models.StatutCourrier).order_by(models.StatutCourrier.statut_id.desc())
-    return stmt \
+    return db.query(models.StatutCourrier) \
         .group_by(models.StatutCourrier.courrier_id) \
         .filter(models.StatutCourrier.statut_id > 4) \
-        .order_by(models.StatutCourrier.id.desc()) \
         .join(models.Courrier) \
         .order_by(models.Courrier.bordereau) \
         .filter(models.Courrier.expediteur_id == user_id) \
         .all()
+
+
+def read_last_statut(db: Session, courrier_id: int):
+    return db.query(models.StatutCourrier.statut_id)\
+        .order_by(models.StatutCourrier.date.desc())\
+        .join(models.Courrier)\
+        .filter(models.Courrier.id == courrier_id).first()
 
 
 # récupération d'un courrier par son numéro de bordereau

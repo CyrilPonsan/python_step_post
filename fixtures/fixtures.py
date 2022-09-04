@@ -89,7 +89,7 @@ etats = [
 def create_fixtures(db: Session):
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     hashed_password = pwd_context.hash("Abcd@1234")
-    db_user = models.User(username="titi@toto.fr", password=hashed_password)
+    db_user = models.User(username="tata@toto.fr", password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -99,7 +99,7 @@ def create_fixtures(db: Session):
         db.add(db_etat)
         db.commit()
         db.refresh(db_etat)
-    bordereau = 18320
+    bordereau = 22480
     db_courrier: models.Courrier
     for dest in destinataires:
         for i in range(20):
@@ -161,14 +161,11 @@ def create_fixtures(db: Session):
     db_statut: models.StatutCourrier
     for courrier in liste_courriers:
         if not courrier.statutcourriers:
-            for i in range(6):
-                j = i + 1
-                if i == 4:
-                    j = i + 2
+            for i in range(5):
                 db_statut = models.StatutCourrier(
                     facteur_id=1,
                     courrier_id=courrier.id,
-                    statut_id=j,
+                    statut_id=i + 1,
                     date=datetime.now() + timedelta(days=x)
                 )
                 x += 1

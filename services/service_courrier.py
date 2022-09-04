@@ -44,15 +44,20 @@ def filter_courriers(liste: list[models.Courrier], filter: bool):
 
 
 def read_all_courriers(db: Session, user_id: int, filter: str, list_courriers=None):
-    user = crud.get_user_by_id(db, user_id)
     if filter == "true":
-        list_courriers = crud.read_courriers(db, user.id)
+        list_courriers = crud.read_courriers(db, user_id)
     elif filter == "false":
         list_courriers = crud.read_historique(db, user_id)
     for x in list_courriers:
-        print(x.statut_id)
+        print(f"bordereau : {x.courrier.bordereau} - {x.statut_id} - user : {x.courrier.expediteur_id}")
     print(f"{len(list_courriers)} courriers traités")
     return toto(list_courriers)
+
+
+def read_last_statut(db: Session, courrier_id: int):
+    statut = crud.read_last_statut(db, courrier_id)
+    print(f"courrier : {courrier_id} - statut : {statut}")
+    return statut
 
 
 async def read_bordereau(db: Session, bordereau: str, user_id: int):
