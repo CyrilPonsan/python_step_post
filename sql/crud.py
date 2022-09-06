@@ -28,12 +28,10 @@ def get_user_by_email(db: Session, email: str):
 # récupération de tous les courriers
 def read_courriers(db: Session, user_id: int):
     sc = models.StatutCourrier
-    return db.query(sc) \
-        .group_by(sc.courrier_id.desc()) \
+    co = models.Courrier
+    return db.query(sc)\
+        .group_by(sc.courrier_id)\
         .having(func.max(sc.statut_id) < 5) \
-        .join(models.Courrier) \
-        .order_by(models.Courrier.bordereau.desc()) \
-        .filter(models.Courrier.expediteur_id == user_id) \
         .all()
 
 
