@@ -47,10 +47,8 @@ def read_all_courriers(db: Session, user_id: int, filter: str, list_courriers=No
         list_courriers = crud.read_courriers(db, user_id)
     elif filter == "false":
         list_courriers = crud.read_historique(db, user_id)
-    for x in list_courriers:
-        print(f"bordereau : {x.courrier.bordereau} - {x.statut_id} - user : {x.courrier.expediteur_id}")
     print(f"{len(list_courriers)} courriers traités")
-    return toto(list_courriers)
+    return create_list_courriers(list_courriers)
 
 
 def read_last_statut(db: Session, courrier_id: int):

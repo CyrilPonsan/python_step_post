@@ -29,13 +29,18 @@ def get_user_by_email(db: Session, email: str):
 def read_courriers(db: Session, user_id: int):
     sc = models.StatutCourrier
     co = models.Courrier
-    return db.query(sc)\
+    return db.query(co)\
+        .select_from(sc)\
+        .filter(co.id == sc.courrier_id, co.expediteur_id == user_id)\
+        .order_by(sc.date.desc())\
         .group_by(sc.courrier_id)\
-        .having(func.max(sc.statut_id) < 5) \
+        .having(func.max(sc.statut_id) < 5)\
         .all()
 
 
 def read_historique(db: Session, user_id: int):
+    sc = models.StatutCourrier
+    co = models.Courrier
     return db.query(models.StatutCourrier) \
         .group_by(models.StatutCourrier.courrier_id) \
         .filter(models.StatutCourrier.statut_id > 4) \
