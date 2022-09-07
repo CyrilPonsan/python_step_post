@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from sqlalchemy import func, or_, not_
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -41,12 +41,12 @@ def read_courriers(db: Session, user_id: int):
 def read_historique(db: Session, user_id: int):
     sc = models.StatutCourrier
     co = models.Courrier
-    return db.query(models.StatutCourrier) \
-        .group_by(models.StatutCourrier.courrier_id) \
-        .filter(models.StatutCourrier.statut_id > 4) \
-        .join(models.Courrier) \
-        .order_by(models.Courrier.bordereau.desc()) \
-        .filter(models.Courrier.expediteur_id == user_id) \
+    return db.query(co)\
+        .select_from(sc)\
+        .filter(co.id == sc.courrier_id, co.expediteur_id == user_id)\
+        .order_by(sc.date.desc())\
+        .group_by(sc.courrier_id)\
+        .having(func.max(sc.statut_id) > 4)\
         .all()
 
 

@@ -4,13 +4,14 @@ import mariadb
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from sql import models
-
+"""
 mydb = mariadb.connect(
     host="j5zntocs2dn6c3fj.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
     user="htpkkl1ks2cterll",
     password="d60ca1mc7jx8aepu",
     database="bfph5v8vakot3nhn"
 )
+"""
 destinataires = {
     "user_id": 1,
     "civilite": "mr",
