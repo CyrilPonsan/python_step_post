@@ -27,25 +27,16 @@ class Courrier(CourrierBase):
     class Config:
         orm_mode = True
 
-class TempCourrier(BaseModel):
+
+class ResponseCourrier(BaseModel):
     id: int
     type: int
     bordereau: int
     civilite: str
     prenom: str
     nom: str
-    adresse: str
-    code_postal: str
-    ville: str
-
-    class Config:
-        orm_mode = True
-
-
-class ResponseCourrier(BaseModel):
-    courrier: TempCourrier
+    etat: str
     date: datetime
-    statut: int
 
 
 class StatutBase(BaseModel):

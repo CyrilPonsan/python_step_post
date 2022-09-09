@@ -25,35 +25,35 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.username == email).first()
 
 
-# récupération de tous les courriers
 def read_courriers(db: Session, user_id: int):
     sc = models.StatutCourrier
     co = models.Courrier
-    return db.query(co)\
-        .select_from(sc)\
-        .filter(co.id == sc.courrier_id, co.expediteur_id == user_id)\
-        .order_by(sc.date.desc())\
-        .group_by(sc.courrier_id)\
-        .having(func.max(sc.statut_id) < 5)\
+    return db.query(co.id, co.type, co.bordereau, co.civilite, co.prenom, co.nom, func.max(sc.statut_id).label("etat"),
+                    func.max(sc.date).label("date")) \
+        .select_from(sc) \
+        .filter(sc.courrier_id == co.id, co.expediteur_id == user_id) \
+        .group_by(sc.courrier_id).having(func.max(sc.statut_id) < 5) \
+        .order_by(sc.date.desc()) \
         .all()
 
 
 def read_historique(db: Session, user_id: int):
     sc = models.StatutCourrier
     co = models.Courrier
-    return db.query(co)\
-        .select_from(sc)\
-        .filter(co.id == sc.courrier_id, co.expediteur_id == user_id)\
-        .order_by(sc.date.desc())\
-        .group_by(sc.courrier_id)\
-        .having(func.max(sc.statut_id) > 4)\
+    return db.query(co.id, co.type, co.bordereau, co.civilite, co.prenom, co.nom, func.max(sc.statut_id).label("etat"),
+                    func.max(sc.date).label("date")) \
+        .select_from(sc) \
+        .filter(sc.courrier_id == co.id, co.expediteur_id == user_id) \
+        .group_by(sc.courrier_id) \
+        .having(func.max(sc.statut_id) > 4) \
+        .order_by(sc.date.desc()) \
         .all()
 
 
 def read_last_statut(db: Session, courrier_id: int):
-    return db.query(models.StatutCourrier.statut_id)\
-        .order_by(models.StatutCourrier.date.desc())\
-        .join(models.Courrier)\
+    return db.query(models.StatutCourrier.statut_id) \
+        .order_by(models.StatutCourrier.date.desc()) \
+        .join(models.Courrier) \
         .filter(models.Courrier.id == courrier_id).first()
 
 

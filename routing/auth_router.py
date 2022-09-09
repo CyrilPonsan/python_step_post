@@ -17,7 +17,7 @@ def authenticate_user(plain_password, hashed_password):
 @auth_router.post("/login")
 def login(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, user.username)
-    if user:
+    if db_user:
         if not authenticate_user(user.password, db_user.password):
             raise HTTPException(status_code=401, detail="Identifiants incorrects")
     access_token = Authorize.create_access_token(subject=db_user.id)
