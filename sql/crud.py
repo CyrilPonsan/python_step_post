@@ -32,7 +32,8 @@ def read_courriers(db: Session, user_id: int):
                     func.max(sc.date).label("date")) \
         .select_from(sc) \
         .filter(sc.courrier_id == co.id, co.expediteur_id == user_id) \
-        .group_by(sc.courrier_id).having(func.max(sc.statut_id) < 5) \
+        .group_by(sc.courrier_id)\
+        .having(func.max(sc.statut_id) < 5) \
         .order_by(sc.date.desc()) \
         .all()
 
