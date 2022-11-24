@@ -6,3 +6,6 @@ SQL_ALCHEMY_DATABASE_URL = "mariadb+mariadbconnector://rv8aj31m6t16iarg:f93k9g2w
 engine = create_engine(SQL_ALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
+# hello commentaire
